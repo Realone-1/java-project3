@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git checkout') {
+            steps {
+            git 'https://github.com/Realone-1/java-project2.git'
+            }
+        }
+        stage('Build') {
+            steps {
+            sh 'cd MyWebApp && mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'cd MyWebApp mvn test'
+            }
+        }
+        stage('Deploy to Tomcat') {
+            steps {
+            deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.173.173.216:8080/')], contextPath: 'myapp', war: '**/*.war'
+            }
+        }
+    }
+}
